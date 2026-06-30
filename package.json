@@ -1,0 +1,9 @@
+{
+  "name": "pix-segueme-xxii",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Termômetro de Pix Solidário - Encontro Segue-me XXII edição",
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0"
+  }
+}

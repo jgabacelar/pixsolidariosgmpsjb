@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pix Solidário · Segue-me XXII</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream: #FAF6EC;
+    --cream-deep: #F1E9D6;
+    --gold: #FAC81E;
+    --gold-deep: #F0A03C;
+    --brown: #824628;
+    --brown-deep: #5C3119;
+    --grey: #6E6E6E;
+    --ink: #2B2118;
+    --ink-soft: #6B5D4D;
+    --dusty-blue: #ACC2CF;
+    --line: rgba(130,70,40,0.16);
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+
+  body{
+    background:
+      radial-gradient(circle at 14% 12%, rgba(250,200,30,0.16), transparent 42%),
+      radial-gradient(circle at 88% 80%, rgba(130,70,40,0.08), transparent 48%),
+      var(--cream);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:44px 20px 32px;
+  }
+
+  .logo{
+    width:118px;
+    height:118px;
+    object-fit:contain;
+    filter: drop-shadow(0 6px 14px rgba(130,70,40,0.18));
+  }
+
+  .badge{
+    margin-top:18px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    border:1px solid var(--line);
+    background:rgba(255,255,255,0.5);
+    border-radius:100px;
+    padding:7px 16px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .badge .roman{ color:var(--brown); font-weight:600; }
+
+  h1{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:clamp(34px, 6vw, 54px);
+    letter-spacing:-0.01em;
+    margin-top:16px;
+    text-align:center;
+    color:var(--ink);
+  }
+  h1 em{ font-style:italic; color:var(--brown); }
+
+  .subtitle{
+    font-size:15px;
+    color:var(--ink-soft);
+    margin-top:10px;
+    text-align:center;
+    max-width:380px;
+    line-height:1.5;
+  }
+
+  .stage{
+    margin-top:40px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:22px;
+  }
+
+  .rays{
+    width:140px;
+    height:46px;
+    transition: opacity 600ms ease;
+  }
+  .rays line{
+    stroke: var(--gold-deep);
+    stroke-width:3;
+    stroke-linecap:round;
+    transform-origin:70px 46px;
+    transition: opacity 600ms ease;
+  }
+
+  .thermo-wrap{ position:relative; width:160px; margin-top:-10px; }
+
+  .ticks{
+    position:absolute;
+    left:-58px;
+    top:18px;
+    bottom:48px;
+    display:flex;
+    flex-direction:column-reverse;
+    justify-content:space-between;
+  }
+  .tick{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--ink-soft);
+    display:flex;
+    align-items:center;
+    gap:6px;
+    opacity:0.75;
+  }
+  .tick::after{ content:''; width:10px; height:1px; background:var(--line); }
+
+  .liquid-fill{ transition: height 900ms cubic-bezier(.22,1,.36,1); }
+
+  .count-display{ text-align:center; }
+
+  .count-number{
+    font-family:'IBM Plex Mono', monospace;
+    font-weight:600;
+    font-size:clamp(46px, 9vw, 68px);
+    line-height:1;
+    color:var(--ink);
+  }
+  .count-number .slash{ color:var(--ink-soft); font-weight:400; margin:0 4px; }
+
+  .count-label{
+    font-size:12px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    margin-top:8px;
+  }
+
+  .progress-pct{
+    margin-top:16px;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    color:var(--brown-deep);
+    background:rgba(250,200,30,0.18);
+    border:1px solid rgba(130,70,40,0.22);
+    padding:6px 14px;
+    border-radius:100px;
+  }
+
+  .goal-reached{
+    margin-top:20px;
+    text-align:center;
+    font-family:'Fraunces', serif;
+    font-size:16px;
+    color:var(--brown-deep);
+    opacity:0;
+    transition:opacity 500ms ease;
+    max-width:320px;
+  }
+  .goal-reached.show{ opacity:1; }
+
+  .patron-card{
+    margin-top:46px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    background:rgba(172,194,207,0.18);
+    border:1px solid rgba(172,194,207,0.55);
+    border-radius:16px;
+    padding:14px 18px;
+    max-width:380px;
+  }
+  .patron-card img{
+    width:52px; height:52px;
+    border-radius:50%;
+    object-fit:cover;
+    object-position:top center;
+    border:2px solid var(--cream);
+    box-shadow:0 0 0 1px rgba(172,194,207,0.7);
+    flex-shrink:0;
+  }
+  .patron-text{ font-size:13px; }
+  .patron-quote{
+    font-style:italic;
+    color:var(--brown-deep);
+    line-height:1.4;
+  }
+  .patron-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    margin-top:4px;
+    opacity:0.8;
+  }
+
+  footer{
+    margin-top:auto;
+    padding-top:40px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:10px;
+  }
+
+  .footer-mark{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--ink-soft);
+    opacity:0.75;
+  }
+
+  .gear-btn{
+    width:34px; height:34px;
+    border-radius:50%;
+    border:1px solid var(--line);
+    background:rgba(255,255,255,0.6);
+    color:var(--ink-soft);
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:transform 200ms ease, border-color 200ms ease;
+  }
+  .gear-btn:hover{ border-color:var(--brown); transform:rotate(40deg); color:var(--brown); }
+  .gear-btn:focus-visible{ outline:2px solid var(--brown); outline-offset:2px; }
+
+  .overlay{
+    position:fixed; inset:0;
+    background:rgba(43,33,24,0.45);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:50;
+  }
+  .overlay.open{ display:flex; }
+
+  .panel{
+    background:var(--cream);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:28px;
+    width:100%;
+    max-width:340px;
+    box-shadow:0 24px 60px rgba(43,33,24,0.25);
+    color:var(--ink);
+  }
+  .panel h2{ font-family:'Fraunces', serif; font-size:19px; margin-bottom:4px; }
+  .panel .panel-sub{ font-size:12px; color:var(--ink-soft); margin-bottom:18px; }
+
+  .panel input[type="password"], .panel input[type="number"]{
+    width:100%;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:14px;
+    padding:10px 12px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    background:white;
+    color:var(--ink);
+    margin-bottom:12px;
+  }
+  .panel input:focus-visible{ outline:2px solid var(--brown); outline-offset:1px; }
+
+  .panel label{
+    font-size:11px; text-transform:uppercase; letter-spacing:0.06em;
+    color:var(--ink-soft); display:block; margin-bottom:6px;
+  }
+
+  .btn{
+    font-family:'Inter', sans-serif;
+    font-weight:600;
+    font-size:14px;
+    border:none;
+    border-radius:8px;
+    padding:10px 14px;
+    cursor:pointer;
+    transition:opacity 150ms ease, transform 150ms ease;
+  }
+  .btn:active{ transform:scale(0.97); }
+  .btn:focus-visible{ outline:2px solid var(--brown); outline-offset:2px; }
+
+  .btn-primary{ background:var(--brown); color:var(--cream); }
+  .btn-primary:hover{ opacity:0.88; }
+
+  .btn-ghost{ background:transparent; color:var(--ink-soft); border:1px solid var(--line); }
+  .btn-ghost:hover{ border-color:var(--ink-soft); }
+
+  .row.spread{ display:flex; justify-content:space-between; gap:10px; margin-top:4px; }
+
+  .pix-row{ display:flex; gap:10px; margin-bottom:14px; }
+  .pix-row .btn{ flex:1; }
+  .btn-add{ background:var(--gold-deep); color:var(--ink); }
+  .btn-add:hover{ opacity:0.88; }
+  .btn-sub{ background:var(--cream-deep); color:var(--ink); border:1px solid var(--line); }
+
+  .divider{ height:1px; background:var(--line); margin:16px 0; }
+
+  .panel-foot{ display:flex; justify-content:space-between; align-items:center; margin-top:18px; }
+
+  .reset-link{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--ink-soft);
+    background:none;
+    border:none;
+    cursor:pointer;
+    text-decoration:underline;
+  }
+
+  .error-msg{ font-size:12px; color:#B23A22; margin-top:-6px; margin-bottom:10px; display:none; }
+  .error-msg.show{ display:block; }
+
+  @media (prefers-reduced-motion: reduce){
+    .liquid-fill{ transition:none; }
+  }
+</style>
+</head>
+<body>
+
+  <img class="logo" src="img/logo-segueme.png" alt="Logo oficial do Segue-me">
+
+  <div class="badge">ENCONTRO SEGUE-ME <span class="roman">· XXII EDIÇÃO</span></div>
+  <h1>Pix <em>Solidário</em></h1>
+  <p class="subtitle">Cada Pix é um passo dado junto. Acompanhe ao vivo quantos já chegaram até a meta do encontro.</p>
+
+  <div class="stage">
+    <svg class="rays" id="rays" viewBox="0 0 140 46" fill="none">
+      <line id="ray1" x1="70" y1="40" x2="70" y2="6"/>
+      <line id="ray2" x1="56" y1="41" x2="46" y2="12"/>
+      <line id="ray3" x1="84" y1="41" x2="94" y2="12"/>
+      <line id="ray4" x1="42" y1="44" x2="26" y2="20"/>
+      <line id="ray5" x1="98" y1="44" x2="114" y2="20"/>
+    </svg>
+
+    <div class="thermo-wrap">
+      <div class="ticks" id="ticks"></div>
+      <svg id="thermoSvg" viewBox="0 0 160 360" width="160" height="360" role="img" aria-label="Termômetro de progresso do Pix Solidário">
+        <defs>
+          <clipPath id="tubeClip">
+            <path d="M65,16 a15,15 0 0 1 30,0 v224 a45,45 0 1 1 -30,0 z"/>
+          </clipPath>
+          <linearGradient id="liquidGrad" x1="0" y1="1" x2="0" y2="0">
+            <stop offset="0%" stop-color="#F0A03C"/>
+            <stop offset="100%" stop-color="#FAC81E"/>
+          </linearGradient>
+        </defs>
+        <path d="M65,16 a15,15 0 0 1 30,0 v224 a45,45 0 1 1 -30,0 z"
+              fill="rgba(255,255,255,0.6)" stroke="#824628" stroke-width="2.5" stroke-opacity="0.55"/>
+        <g clip-path="url(#tubeClip)">
+          <rect id="liquidRect" class="liquid-fill" x="0" y="360" width="160" height="0" fill="url(#liquidGrad)"/>
+        </g>
+        <path d="M65,16 a15,15 0 0 1 30,0 v224 a45,45 0 1 1 -30,0 z"
+              fill="none" stroke="#824628" stroke-width="2.5" stroke-opacity="0.55"/>
+        <line x1="55" y1="16" x2="105" y2="16" stroke="#824628" stroke-width="2" stroke-dasharray="3 3" stroke-opacity="0.45"/>
+      </svg>
+    </div>
+
+    <div class="count-display">
+      <div class="count-number">
+        <span id="countNum">0</span><span class="slash">/</span><span id="goalNum">100</span>
+      </div>
+      <div class="count-label">Pix recebidos</div>
+      <div class="progress-pct" id="pctBadge">0% da meta</div>
+    </div>
+
+    <div class="goal-reached" id="goalReached">A luz chegou até o fim do caminho. Obrigado por seguir com a gente! 🙏</div>
+
+    <div class="patron-card">
+      <img src="img/padroeiro.jpg" alt="Foto do padroeiro do encontro">
+      <div class="patron-text">
+        <div class="patron-quote">"Faz-me santo, Senhor, nem que seja à paulada."</div>
+        <div class="patron-label">Nosso padroeiro</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-mark" id="lastUpdate">aguardando primeira atualização</div>
+    <button class="gear-btn" id="gearBtn" aria-label="Abrir painel administrativo" title="Painel administrativo">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </button>
+  </footer>
+
+  <div class="overlay" id="overlay">
+    <div class="panel">
+      <div id="lockView">
+        <h2>Painel administrativo</h2>
+        <p class="panel-sub">Digite o PIN para atualizar a contagem.</p>
+        <input type="password" id="pinInput" placeholder="PIN" inputmode="numeric">
+        <p class="error-msg" id="pinError">PIN incorreto. Tente novamente.</p>
+        <div class="row spread">
+          <button class="btn btn-ghost" id="cancelLock">Cancelar</button>
+          <button class="btn btn-primary" id="unlockBtn">Entrar</button>
+        </div>
+      </div>
+
+      <div id="adminView" style="display:none;">
+        <h2>Atualizar contagem</h2>
+        <p class="panel-sub">Some ou ajuste manualmente conforme os Pix chegarem.</p>
+
+        <div class="pix-row">
+          <button class="btn btn-sub" id="subBtn">− 1 Pix</button>
+          <button class="btn btn-add" id="addBtn">+ 1 Pix</button>
+        </div>
+
+        <label for="goalInput">Meta de Pix</label>
+        <input type="number" id="goalInput" min="1" step="1">
+
+        <label for="setCountInput">Definir contagem exata</label>
+        <input type="number" id="setCountInput" min="0" step="1">
+
+        <button class="btn btn-primary" id="saveSettingsBtn" style="width:100%;">Salvar alterações</button>
+        <p class="error-msg" id="saveError">Não foi possível salvar. Verifique o PIN e tente de novo.</p>
+
+        <div class="divider"></div>
+
+        <div class="panel-foot">
+          <button class="reset-link" id="resetBtn">Zerar contagem</button>
+          <button class="btn btn-ghost" id="closePanelBtn">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+(function(){
+  const API = '/.netlify/functions/pix-state';
+  const state = { count: 0, goal: 100, updatedAt: null };
+  let currentPin = '';
+
+  const countNum = document.getElementById('countNum');
+  const goalNum = document.getElementById('goalNum');
+  const pctBadge = document.getElementById('pctBadge');
+  const liquidRect = document.getElementById('liquidRect');
+  const goalReached = document.getElementById('goalReached');
+  const lastUpdate = document.getElementById('lastUpdate');
+  const ticksEl = document.getElementById('ticks');
+  const rays = document.getElementById('rays');
+
+  const FULL_HEIGHT = 296;
+
+  function formatTime(iso){
+    if(!iso) return 'aguardando primeira atualização';
+    const d = new Date(iso);
+    return 'última atualização: ' + d.toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' });
+  }
+
+  function buildTicks(goal){
+    ticksEl.innerHTML = '';
+    const steps = 4;
+    for(let i=0;i<=steps;i++){
+      const val = Math.round((goal/steps)*i);
+      const div = document.createElement('div');
+      div.className = 'tick';
+      div.textContent = val;
+      ticksEl.appendChild(div);
+    }
+  }
+
+  function render(){
+    const pct = state.goal > 0 ? Math.min(state.count / state.goal, 1) : 0;
+    countNum.textContent = state.count;
+    goalNum.textContent = state.goal;
+    pctBadge.textContent = Math.round(pct*100) + '% da meta';
+    lastUpdate.textContent = formatTime(state.updatedAt);
+
+    const fillHeight = FULL_HEIGHT * pct;
+    liquidRect.setAttribute('height', fillHeight);
+    liquidRect.setAttribute('y', 360 - 48 - fillHeight);
+
+    goalReached.classList.toggle('show', pct >= 1);
+
+    rays.style.opacity = 0.25 + pct*0.75;
+    document.querySelectorAll('#rays line').forEach((line, i) => {
+      line.style.opacity = pct > (i/5) ? 1 : 0.15;
+    });
+
+    buildTicks(state.goal);
+    document.getElementById('goalInput').value = state.goal;
+    document.getElementById('setCountInput').value = state.count;
+  }
+
+  async function loadState(){
+    try{
+      const res = await fetch(API);
+      if(res.ok){
+        const data = await res.json();
+        state.count = data.count ?? 0;
+        state.goal = data.goal ?? 100;
+        state.updatedAt = data.updatedAt ?? null;
+      }
+    }catch(e){
+      console.error('Falha ao carregar estado', e);
+    }
+    render();
+  }
+
+  async function pushState(newPartial){
+    const saveError = document.getElementById('saveError');
+    saveError.classList.remove('show');
+    try{
+      const res = await fetch(API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-pin': currentPin },
+        body: JSON.stringify({ ...state, ...newPartial })
+      });
+      if(!res.ok) throw new Error('unauthorized or failed');
+      const data = await res.json();
+      state.count = data.count;
+      state.goal = data.goal;
+      state.updatedAt = data.updatedAt;
+      render();
+    }catch(e){
+      saveError.classList.add('show');
+    }
+  }
+
+  const overlay = document.getElementById('overlay');
+  const lockView = document.getElementById('lockView');
+  const adminView = document.getElementById('adminView');
+  const pinInput = document.getElementById('pinInput');
+  const pinError = document.getElementById('pinError');
+
+  function openOverlay(){
+    overlay.classList.add('open');
+    lockView.style.display = 'block';
+    adminView.style.display = 'none';
+    pinInput.value = '';
+    pinError.classList.remove('show');
+    pinInput.focus();
+  }
+  function closeOverlay(){ overlay.classList.remove('open'); }
+
+  document.getElementById('gearBtn').addEventListener('click', openOverlay);
+  document.getElementById('cancelLock').addEventListener('click', closeOverlay);
+  document.getElementById('closePanelBtn').addEventListener('click', closeOverlay);
+  overlay.addEventListener('click', (e) => { if(e.target === overlay) closeOverlay(); });
+  document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeOverlay(); });
+
+  document.getElementById('unlockBtn').addEventListener('click', async () => {
+    currentPin = pinInput.value.trim();
+    pinError.classList.remove('show');
+    try{
+      const res = await fetch(API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-pin': currentPin },
+        body: JSON.stringify(state)
+      });
+      if(res.ok){
+        lockView.style.display = 'none';
+        adminView.style.display = 'block';
+        const data = await res.json();
+        state.count = data.count; state.goal = data.goal; state.updatedAt = data.updatedAt;
+        render();
+      } else if (res.status === 401){
+        pinError.textContent = 'PIN incorreto. Tente novamente.';
+        pinError.classList.add('show');
+      } else {
+        let detail = '';
+        try { const errData = await res.json(); detail = errData.error || ''; } catch(e) {}
+        pinError.textContent = 'Erro do servidor (status ' + res.status + (detail ? ': ' + detail : '') + '). Veja os logs da função no Netlify.';
+        pinError.classList.add('show');
+      }
+    } catch(e){
+      pinError.textContent = 'Não foi possível contatar o servidor. A função pix-state está publicada?';
+      pinError.classList.add('show');
+    }
+  });
+  pinInput.addEventListener('keydown', (e) => { if(e.key === 'Enter') document.getElementById('unlockBtn').click(); });
+
+  document.getElementById('addBtn').addEventListener('click', () => pushState({ count: state.count + 1 }));
+  document.getElementById('subBtn').addEventListener('click', () => pushState({ count: Math.max(0, state.count - 1) }));
+
+  document.getElementById('saveSettingsBtn').addEventListener('click', () => {
+    const goalVal = parseInt(document.getElementById('goalInput').value, 10);
+    const countVal = parseInt(document.getElementById('setCountInput').value, 10);
+    const partial = {};
+    if(!isNaN(goalVal) && goalVal > 0) partial.goal = goalVal;
+    if(!isNaN(countVal) && countVal >= 0) partial.count = countVal;
+    pushState(partial);
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', () => pushState({ count: 0 }));
+
+  loadState();
+  setInterval(loadState, 5000);
+})();
+</script>
+</body>
+</html>
