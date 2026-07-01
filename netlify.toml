@@ -3,5 +3,5 @@
   command = "npm install netlify-cli -g"
 
   [functions]
-    directory = "netlify/functions"
+    directory = "netlify dev"
     node_bundler = "esbuild"
