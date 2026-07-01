@@ -1,4 +1,4 @@
-const { getStore } = require('@netlify/blobs');
+
 
 const DEFAULT_STATE = { count: 0, goal: 100, updatedAt: null };
 
